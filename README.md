@@ -40,3 +40,34 @@ docker compose down
 ```bash
 docker compose down -v
 ```
+
+## Red compartida (cross-compose)
+
+Conectar contenedores de otros `compose.yml` a MySQL/Redis:
+
+```bash
+# Crear red externa (solo primera vez)
+docker network create shared_net
+```
+
+En el otro proyecto, agregar al `compose.yml`:
+
+```yaml
+networks:
+  shared_net:
+    external: true
+
+services:
+  tu-servicio:
+    networks:
+      - shared_net
+```
+
+Los servicios `mysql_db`, `phpmyadmin`, `redis_db` ya estan en `shared_net`.
+
+Conectarse por nombre de contenedor:
+
+| Servicio      | Hostname       |
+|---------------|----------------|
+| MySQL         | `mysql_db`     |
+| Redis         | `redis_db`     |
